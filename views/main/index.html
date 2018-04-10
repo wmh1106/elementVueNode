@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>首页</title>
+</head>
+
+<body>
+  首页
+  <hr>
+  <h1>注册</h1>
+  <div>
+    <form>
+      <input id="username" type="text" name="username" value="">
+      <br/>
+      <input id="pwd1" type="password" name="password" value="">
+      <br/>
+      <input id="pwd2" type="password" name="repassword" value="">
+      <br/>
+      <input id="sub" type="button" value="提交">
+    </form>
+  </div>
+</body>
+
+</html>
+<script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+<script>
+  $('#sub').on('click', function () {
+    var username = document.getElementById('username')
+    var pwd1 = document.getElementById('pwd1')
+    var pwd2 = document.getElementById('pwd2')
+    $.ajax({
+      url: '/api/user/register',
+      type: 'post',
+      data: {
+        username: username.value,
+        password: pwd1.value,
+        repassword: pwd2.value
+      },
+      success: function (res) {
+        console.log(res)
+      }
+    })
+  })
+</script>

@@ -16,19 +16,20 @@ router.use(function (request, response, next) {
     code: 0,
     message: ''
   }
-
   next()
 })
 
 
 /*
+
 用户注册
-常规
-1. 用户名不能为空
-2. 密码不能为空
-3. 两次输入密码必须一致
-数据库
-1. 用户名是否已注册：数据库查询
+
+- 常规
+  1. 用户名不能为空
+  2. 密码不能为空
+  3. 两次输入密码必须一致
+- 数据库
+  1. 用户名是否已注册：数据库查询
 */
 
 router.post('/user/register', function (request, response) {
@@ -59,7 +60,6 @@ router.post('/user/register', function (request, response) {
   User.findOne({
     username: username
   }).then((userInfo) => {
-    console.log('userInfo', userInfo)
     if (userInfo) {
       responseData.code = 1
       responseData.message = '用户名已注册'
@@ -73,11 +73,50 @@ router.post('/user/register', function (request, response) {
       return user.save()
     }
   }).then((newUserInfo) => {
-    console.log('newUserInfo', newUserInfo)
     responseData.message = '注册成功'
     response.json(responseData)
   }).catch((err) => {
     console.log('err', err)
+  })
+
+})
+
+router.post('/user/login', (request, response) => {
+  const username = request.body.username
+  const password = request.body.password
+
+  if (username === '') {
+    responseData.code = 1
+    responseData.message = '用户名不能为空'
+    response.json(responseData)
+    return
+  }
+
+  if (password === '') {
+    responseData.code = 1
+    responseData.message = '密码不能为空'
+    response.json(responseData)
+    return
+  }
+
+  User.findOne({
+    username,
+    password
+  }).then((userInfo) => {
+    if (!userInfo) {
+      responseData.code = 1
+      responseData.message = ' 用户名或密码错误'
+      response.json(responseData)
+      return
+    }
+    responseData.message = ' 登录成功'
+    responseData.data = {
+      id: userInfo._id,
+      username: userInfo.username
+    }
+    response.json(responseData)
+  }).catch((err) => {
+    console.log('error', err)
   })
 })
 

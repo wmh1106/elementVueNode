@@ -11,37 +11,74 @@
 <body>
   首页
   <hr>
-  <h1>注册</h1>
-  <div>
+  <h2>注册</h2>
+  <div class="register">
     <form>
-      <input id="username" type="text" name="username" value="">
+      <input class="username" type="text" name="username" value="">
       <br/>
-      <input id="pwd1" type="password" name="password" value="">
+      <input class="pwd1" type="password" name="password" value="">
       <br/>
-      <input id="pwd2" type="password" name="repassword" value="">
+      <input class="pwd2" type="password" name="repassword" value="">
       <br/>
-      <input id="sub" type="button" value="提交">
+      <input class="sub" type="button" value="提交">
     </form>
+  </div>
+  <hr>
+  <h2>登录</h2>
+  <div class="login">
+    <form>
+      <input class="username" type="text" name="username" value="">
+      <br/>
+      <input class="pwd1" type="password" name="password" value="">
+      <br/>
+      <input class="sub" type="button" value="提交">
+    </form>
+  </div>
+  <hr>
+  <div class="user_info">
+    <h2>用户信息</h2>
+    <div>
+      <span> 用户名：</span>
+      <span class="user_name"> xxx</span>
+      <p> 进入后台管理页面：
+        <a href="/admin">进入</a>
+      </p>
+    </div>
+    <div>
+      <button class="logout"> 退出</button>
+    </div>
   </div>
 </body>
 
 </html>
 <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
 <script>
-  $('#sub').on('click', function () {
-    var username = document.getElementById('username')
-    var pwd1 = document.getElementById('pwd1')
-    var pwd2 = document.getElementById('pwd2')
+  $('.register .sub').on('click', function () {
     $.ajax({
       url: '/api/user/register',
       type: 'post',
       data: {
-        username: username.value,
-        password: pwd1.value,
-        repassword: pwd2.value
+        username: $('.register .username').val(),
+        password: $('.register .pwd1').val(),
+        repassword: $('.register .pwd2').val()
       },
       success: function (res) {
         console.log(res)
+      }
+    })
+  })
+
+  $('.login .sub').on('click', function () {
+    $.ajax({
+      url: '/api/user/login',
+      type: 'post',
+      data: {
+        username: $('.login .username').val(),
+        password: $('.login .pwd1').val()
+      },
+      success: function (res) {
+        console.log(res)
+        $('.user_info .user_name').text(res.data.username)
       }
     })
   })

@@ -2,13 +2,33 @@ const express = require('express')
 const swig = require('swig')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cookies = require('cookies')
 
 const app = express()
 
+const User = require('./models/User')
+// bodyParser
 app.use(bodyParser.urlencoded({
   extended: true
 }))
+// cookies
+app.use((request, response, next) => {
+  request.cookies = new cookies(request, response)
 
+  const cookies_userInfo = request.cookies.get('userInfo')
+
+  if (cookies_userInfo) {
+    request.userInfo = JSON.parse(cookies_userInfo)
+    // 获取当前登录用户的类型：普通|管理员
+    User.findById(request.userInfo.id).then((userInfo) => {
+      request.userInfo.isAdmin = Boolean(userInfo.isAdmin)
+      next()
+    })
+  } else {
+    request.userInfo = null
+    next()
+  }
+})
 
 // 静态文件托管
 app.use('/public', express.static(__dirname + '/public'))

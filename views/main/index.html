@@ -11,8 +11,11 @@
 <body>
   首页
   <hr>
-  <h2>注册</h2>
+  <div></div>
+  {% if !userInfo.id %}
+
   <div class="register">
+    <h2>注册</h2>
     <form>
       <input class="username" type="text" name="username" value="">
       <br/>
@@ -24,8 +27,8 @@
     </form>
   </div>
   <hr>
-  <h2>登录</h2>
   <div class="login">
+    <h2>登录</h2>
     <form>
       <input class="username" type="text" name="username" value="">
       <br/>
@@ -34,20 +37,28 @@
       <input class="sub" type="button" value="提交">
     </form>
   </div>
-  <hr>
+  <hr> {% else %}
   <div class="user_info">
     <h2>用户信息</h2>
     <div>
-      <span> 用户名：</span>
-      <span class="user_name"> xxx</span>
+      {% if userInfo.isAdmin %}
+      <p> 你好管理员：</p>
       <p> 进入后台管理页面：
         <a href="/admin">进入</a>
       </p>
+      {% else %}
+      <p> 你好：欢迎观看我的 blog</p>
+      {% endif %}
+
+      <span> 用户名：</span>
+      <span class="user_name"> {{ userInfo.username }} {{ userInfo.isAdmin }}</span>
+
     </div>
     <div>
       <button class="logout"> 退出</button>
     </div>
   </div>
+  {% endif %}
 </body>
 
 </html>
@@ -78,7 +89,17 @@
       },
       success: function (res) {
         console.log(res)
-        $('.user_info .user_name').text(res.data.username)
+        window.location.reload()
+      }
+    })
+  })
+
+  $('.user_info .logout').on('click', function () {
+    $.ajax({
+      url: '/api/user/logout',
+      type: 'get',
+      success: function (res) {
+        window.location.reload()
       }
     })
   })

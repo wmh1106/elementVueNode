@@ -7,6 +7,7 @@ const User = require('../models/User')
 1. `/`首页
 2. `register` 用户注册
 3. `login` 用户登录
+4. `logout` 用户退出
 4. `comment` 评论获取
 5. `comment/post` 评论提交
 */
@@ -114,10 +115,21 @@ router.post('/user/login', (request, response) => {
       id: userInfo._id,
       username: userInfo.username
     }
+    request.cookies.set('userInfo', JSON.stringify({
+      id: userInfo._id,
+      username: userInfo.username
+    }))
     response.json(responseData)
   }).catch((err) => {
     console.log('error', err)
   })
 })
+
+router.get('/user/logout', (request, response) => {
+  request.cookies.set('userInfo', null)
+  responseData.message = '退出成功'
+  response.json(responseData)
+})
+
 
 module.exports = router
